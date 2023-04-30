@@ -32,10 +32,12 @@ LIBS += C:\openCV\opencv\release\bin\libopencv_imgproc470.dll
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    segmentation.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    segmentation.h
 
 FORMS += \
     mainwindow.ui

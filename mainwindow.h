@@ -16,11 +16,19 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void showImg(cv::Mat& img, QLabel* imgLbl, enum QImage::Format imgFormat, int width , int hieght);
+
 
 
 private slots:
     void on_actionUpload_triggered();
+
+    void on_harrisBtn_clicked();
+
+    void on_harrisBtn_2_clicked();
+
+    void on_set_seedsBtn_clicked();
+
+    void on_submitBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
