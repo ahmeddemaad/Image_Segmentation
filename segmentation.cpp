@@ -64,9 +64,11 @@ void getImgLbl(QLabel* imgLbl1){
     imgLbl = imgLbl1;
 }
 
+
 vector<pair<int, int>>* get_seeds(){
     return &seed_set;
 }
+
 
 void mouseCallback(int event, int x, int y, int flags, void* userdata)
 {
@@ -82,6 +84,8 @@ void mouseCallback(int event, int x, int y, int flags, void* userdata)
     }
 }
 
+
+//@desc maps the image
 void showImg(cv::Mat& img, QLabel* imgLbl, enum QImage::Format imgFormat, int width , int hieght, bool colorTransform)
 {
     if(colorTransform){
@@ -91,3 +95,60 @@ void showImg(cv::Mat& img, QLabel* imgLbl, enum QImage::Format imgFormat, int wi
     QPixmap pix = QPixmap::fromImage(image);
     imgLbl->setPixmap(pix.scaled(width, hieght, Qt::KeepAspectRatio));
 }
+
+
+
+//@desc K-mean Clustring Using Eculdidean distance as a simlarity metric
+void kmeans_euclidean(const Mat& X, int K, Mat& idx, Mat& centroids, int max_iters) {
+    int m = X.rows;
+    int n = X.cols;
+
+    // Randomly initialize K centroids
+    RNG rng;
+    centroids = Mat::zeros(K, n, CV_32F);
+    for (int i = 0; i < K; i++) {
+        int row = rng.uniform(0, m);
+        X.row(row).copyTo(centroids.row(i));
+    }
+
+    Mat previous_centroids;
+    for (int iter = 0; iter < max_iters; iter++) {
+        // Assign each data point to the closest centroid
+        idx = Mat::zeros(m, 1, CV_32S);
+        for (int i = 0; i < m; i++) {
+            float min_dist = numeric_limits<float>::max();
+            int closest_centroid = 0;
+            for (int j = 0; j < K; j++) {
+                float dist = norm(X.row(i), centroids.row(j));
+                if (dist < min_dist) {
+                    min_dist = dist;
+                    closest_centroid = j;
+                }
+            }
+            idx.at<int>(i, 0) = closest_centroid;
+        }
+
+        // Update centroids
+        previous_centroids = centroids.clone();
+        for (int i = 0; i < K; i++) {
+            Mat points;
+            for (int j = 0; j < m; j++) {
+                if (idx.at<int>(j, 0) == i) {
+                    points.push_back(X.row(j));
+                }
+            }
+            if (!points.empty()) {
+                Mat1f sum;
+                reduce(points, sum, 0, REDUCE_SUM);
+                centroids.row(i) = sum / static_cast<float>(points.rows);
+            }
+        }
+
+        // Check for convergence
+        double delta = norm(centroids, previous_centroids);
+        if (delta < 1e-5) {
+            break;
+        }
+    }
+}
+

@@ -30,6 +30,14 @@ private slots:
 
     void on_submitBtn_clicked();
 
+    void on_comboBox_currentTextChanged(const QString &arg1);
+
+    void on_submitBtn_2_clicked();
+
+    void on_kmeansBtn_clicked();
+
+    void on_horizontalSlider_sliderMoved(int position);
+
 private:
     Ui::MainWindow *ui;
 };
