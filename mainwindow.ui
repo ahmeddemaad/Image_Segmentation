@@ -168,10 +168,10 @@ QPushButton:hover{
      <widget class="QComboBox" name="comboBox">
       <property name="geometry">
        <rect>
-        <x>80</x>
-        <y>470</y>
+        <x>70</x>
+        <y>460</y>
         <width>141</width>
-        <height>31</height>
+        <height>41</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -209,7 +209,7 @@ QComboBox::down-arrow {
       </property>
       <item>
        <property name="text">
-        <string>RegionGrowing</string>
+        <string>Region Growing</string>
        </property>
       </item>
       <item>
@@ -217,44 +217,11 @@ QComboBox::down-arrow {
         <string>kmeans</string>
        </property>
       </item>
-     </widget>
-     <widget class="QPushButton" name="kmeansBtn">
-      <property name="geometry">
-       <rect>
-        <x>560</x>
-        <y>460</y>
-        <width>141</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="cursor">
-       <cursorShape>PointingHandCursor</cursorShape>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QPushButton{
-	color:rgb(17,17,17);
-	border-width: 2px;
-	border-radius: 10px;
-	border-bottom-color: rgb(150,150,150);
-	border-right-color: rgb(165,165,165);
-	border-left-color: rgb(165,165,165);
-	border-top-color: rgb(180,180,180);
-	border-style: solid;
-	padding: 4px;
-	background-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 rgba(220, 220, 220, 255), stop:1 rgba(255, 255, 255, 255));
-}
-
-QPushButton:hover{
-	color:rgb(17,17,17);
-	border-width: 1px;
-	border-radius: 10px;
-	padding: 4px;
-	background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(220, 220, 220, 255), stop:1 rgba(255, 255, 255, 255));
-}</string>
-      </property>
-      <property name="text">
-       <string>Submit</string>
-      </property>
+      <item>
+       <property name="text">
+        <string>Mean Shift</string>
+       </property>
+      </item>
      </widget>
      <widget class="QSlider" name="horizontalSlider">
       <property name="geometry">

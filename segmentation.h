@@ -2,6 +2,8 @@
 #define SEGMENTATION_H
 
 #include <iostream>
+#include <vector>
+#include <cmath>
 #include <opencv2/opencv.hpp>
 #include "qlabel.h"
 #include <QDebug>
@@ -24,5 +26,15 @@ Mat* setImg(Mat img1);
 void getImgLbl(QLabel* imgLbl1);
 void kmeans_euclidean(const Mat& X, int K, Mat& idx, Mat& centroids, int max_iters);
 vector<pair<int, int>>* get_seeds();
+struct Pixel {
+    int x;
+    int y;
+    cv::Vec3b color;
 
+    bool operator==(const Pixel& other) const {
+            return x == other.x && y == other.y && color == other.color;
+        }
+};
+Mat mean_shift_segmentation(cv::Mat image, double bandwidth);
+double estimateBandwidth(cv::Mat inputImg);
 #endif // SEGMENTATION_H

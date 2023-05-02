@@ -38,6 +38,8 @@ private slots:
 
     void on_horizontalSlider_sliderMoved(int position);
 
+    void on_horizontalSlider_actionTriggered(int action);
+
 private:
     Ui::MainWindow *ui;
 };
