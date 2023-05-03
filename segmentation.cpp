@@ -257,6 +257,7 @@ long calcDistance(Vec3b point1, Vec3b point2) {
     return sqrt(pow(point1[0] - point2[0], 2) + pow(point1[1] - point2[1], 2) + pow(point1[2] - point2[2], 2));
 }
 
+// Merge Clusters
 Vec3b mergeClusters(Vec3b c1, Vec3b c2) {
 
     int l = (c1[0] + c2[0]) / 2;
@@ -266,103 +267,71 @@ Vec3b mergeClusters(Vec3b c1, Vec3b c2) {
     return Vec3b(static_cast<uchar>(l), static_cast<uchar>(u), static_cast<uchar>(v));
 }
 
-Mat agglomerativeClustering(Mat& original, int n){
+Mat agglomerativeSegmentation(Mat original, int numClusters) {
 
-    cvtColor(original, original, COLOR_BGR2Luv);
-    Mat output;
-    output.create(original.size(), original.type());
+  cvtColor(original, original, cv::COLOR_BGR2Luv);
 
+  Mat output;
+  output.create(original.size(), original.type());
 
-    // Convert image to a vector of points and initialize clusters
-    vector<Point> points;
-    vector<Vec3b> clusters;
+  // Initialize the clusters with each point as a cluster
+  vector<Vec3b> clusters;
 
-    for (int i = 0; i < original.rows; i++) {
-        for (int j = 0; j < original.cols; j++) {
-            points.push_back(Point(i, j));
-            clusters.push_back(original.at<Vec3b>(i, j));
-
+  for (int i = 0; i < original.rows; i++) {
+      for (int j = 0; j < original.cols; j++) {
+          clusters.push_back(original.at<Vec3b>(i, j));
         }
     }
 
-    // initialize distances matrix
-    int diff[ original.rows* original.cols ][ original.rows* original.cols ];
-    for(int i =0; i < original.rows* original.cols; i++){
-        for (int j = 0; j <= original.rows* original.cols ; j++){
-            diff[i][j] = 0;
-        }
-    }
+  // Merge clusters until the desired number of clusters is reached
+  while (clusters.size() > numClusters) {
 
-    // calculate distance matrix
-    long distance;
-
-    for(int i =0; i < points.size(); i++){
-        for (int j = 0; j <= i ; j++){
-
-            distance = calcDistance(clusters[i], clusters[j]);
-            diff[i][j] = distance;
-        }
-    }
-
-
-
-    // Merge clusters until the desired number of clusters is reached
-    int numClusters = n;
-    int c1, c2;
-    int min_distance;
-
-    while (clusters.size() > numClusters) {
-
-        min_distance = LONG_MAX;
-
-        // find min value in diff array
-        for(int i =0; i < original.rows* original.cols ; i++){
-            for (int j = 0; j < original.rows* original.cols  ; j++){
-                if (diff[i][j] == 0){
-                    continue;
-                }
-                else if (diff[i][j] < min_distance){
-                    min_distance = diff[i][j];
-                    c1 = i;
-                    c2 = j;
+      // Find the pair of closest clusters
+      long min_dist = LONG_MAX;
+      int min_row, min_col;
+      for (int i = 0; i < clusters.size(); i++) {
+          for (int j = i + 1; j < clusters.size(); j++) {
+              long dist = calcDistance(clusters[i], clusters[j]);
+              if (dist < min_dist) {
+                  min_dist = dist;
+                  min_row = i;
+                  min_col = j;
                 }
             }
         }
 
-        // Merge the two clusters
-        clusters[c1] = mergeClusters(clusters[c1], clusters[c2]);
-        clusters.erase(clusters.begin() + c2);
-        diff[c1][c2] = 0;
+      // Merge the two clusters
+      clusters[min_row] = mergeClusters(clusters[min_row], clusters[min_col]);
+      clusters.erase(clusters.begin() + min_col);
     }
 
-    // Assign labels to the pixels
-    Mat labels(original.size(), CV_32S);
-    for (int i = 0; i < original.rows; i++) {
-        for (int j = 0; j < original.cols; j++) {
-            int min_cluster = 0;
-            long min_dist = LONG_MAX;
-            for (int k = 0; k < clusters.size(); k++) {
-                long dist = calcDistance(original.at<Vec3b>(i, j), clusters[k]);
-                if (dist < min_dist) {
-                    min_dist = dist;
-                    min_cluster = k;
-                  }
-              }
-            labels.at<int>(i, j) = min_cluster;
-          }
-      }
+  // Assign labels pixels
+  Mat labels(original.size(), CV_32S);
+  for (int i = 0; i < original.rows; i++) {
+      for (int j = 0; j < original.cols; j++) {
+          int min_cluster = 0;
+          long min_dist = LONG_MAX;
+          for (int k = 0; k < clusters.size(); k++) {
+              long dist = calcDistance(original.at<Vec3b>(i, j), clusters[k]);
+              if (dist < min_dist) {
+                  min_dist = dist;
+                  min_cluster = k;
+                }
+            }
+          labels.at<int>(i, j) = min_cluster;
+        }
+    }
 
-    // Visualize the segmentation
-    for (int i = 0; i < original.rows; i++) {
-        for (int j = 0; j < original.cols; j++) {
-            Vec3b color = clusters[labels.at<int>(i, j)];
-            output.at<Vec3b>(i, j) = color;
-          }
-      }
+  // apply segmentation on output
+  for (int i = 0; i < original.rows; i++) {
+      for (int j = 0; j < original.cols; j++) {
+          Vec3b color = clusters[labels.at<int>(i, j)];
+          output.at<Vec3b>(i, j) = color;
+        }
+    }
 
-
-    return output;
-
+  cv::cvtColor(output, output, cv::COLOR_Luv2BGR);
+  return output;
 }
 
 

@@ -175,9 +175,8 @@ void MainWindow::on_submitBtn_clicked()
 
     else if(mode=="Agglomerative"){
         Mat original = img.clone();
-        cv::resize(original,original,cv::Size(60,60));
-
-        Mat result = agglomerativeClustering(original , 3);
+        int clusters = ui->horizontalSlider->value();
+        Mat result = agglomerativeSegmentation(original , clusters);
 
         showImg(result, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
 
