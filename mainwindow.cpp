@@ -14,7 +14,6 @@ using namespace std;
 using namespace cv;
 
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -39,22 +38,25 @@ Mat img;
 
 void MainWindow::on_actionUpload_triggered()
 {
-    ui->imginput1->clear();
-    ui->imgOutput1->clear();
 
+    // Clearing Previous images
+
+
+    // Reading the images & Resizing it to fit Qlabel
     QString imgPath = QFileDialog::getOpenFileName(this, "Open an Image", "..", "Images (*.png *.xpm *.jpg *.bmb)");
-
     if(imgPath.isEmpty())
         return;
-
-
-    img = imread(imgPath.toStdString());
+    ui->imginput1->clear();
+    ui->imgOutput1->clear();
+    img = imread(imgPath.toStdString(),IMREAD_COLOR);
     cv::resize(img, img, Size(512, 512));
+
+    // Showing the input image uploaded in RGB format
     showImg(img, ui->imginput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
     showImg(img, ui->imginput2, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
     showImg(img, ui->imginput3_1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
 }
-vector<pair<int, int>>* seedSet;
+
 
 void MainWindow::on_set_seedsBtn_clicked()
 {
@@ -68,18 +70,81 @@ void MainWindow::on_set_seedsBtn_clicked()
     Mat img_with_seeds;
     cvtColor(img, img_with_seeds, COLOR_BGR2RGB);
     getImgLbl(ui->imginput1);
-    namedWindow("set seeds", WINDOW_AUTOSIZE); // Create a window
-    imshow("set seeds", img_with_seeds); // Show our image inside the created window
-    cv::setMouseCallback("set seeds", mouseCallback, &img_with_seeds); // Register the callback function
+    // Create a window
+    namedWindow("set seeds", WINDOW_AUTOSIZE);
+    // Show our image inside the created window
+    imshow("set seeds", img.clone());
+    // Register the callback function
+    cv::setMouseCallback("set seeds", mouseCallback, &img_with_seeds);
 }
 
 
+
+//@desc Actions on clicking on ReigonGrowing Submit button
 void MainWindow::on_submitBtn_clicked()
 {
-    Mat im;
-    cvtColor(img.clone(), im, COLOR_BGR2GRAY);
-    Mat segmented_image = regionGrowing(im, *seedSet, 255, 2);
-    showImg(segmented_image, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
+
+//    if(imgPath.isEmpty())
+//        return;
+    QString mode = ui->comboBox->currentText();
+    if(mode == "Region Growing")
+    {
+        if(get_seeds()->empty())
+        {
+            return;
+        }
+        Mat im;
+        cvtColor(img.clone(), im, COLOR_BGR2GRAY);
+        Mat segmented_image = regionGrowing(im, *seedSet, 255, 2);
+        showImg(segmented_image, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
+    }
+    else if(mode=="kmeans"){
+        //Reading & Resizing The Image As a Colored RGB image
+        Mat image = img.clone();
+
+        // Convert the image to LUV color space
+        Mat luv_image;
+        cvtColor(image, luv_image, COLOR_BGR2Luv);
+
+        // Convert the image to a 2D matrix for k-means clustering
+        Mat data;
+        luv_image.convertTo(data, CV_32F);
+        data = data.reshape(1, data.rows * data.cols);
+
+        // Perform k-means clustering
+        int num_clusters = ui->horizontalSlider->value();
+        Mat labels, centers;
+        kmeans_euclidean(data, num_clusters, labels, centers, 5);
+
+        // Reshape the labels and centers to match the LUV image size
+        labels = labels.reshape(1, luv_image.rows);
+        centers = centers.reshape(1, num_clusters);
+
+        // Generate the segmented image
+        Mat segmented_image(luv_image.size(), luv_image.type());
+        for (int i = 0; i < luv_image.rows; i++) {
+            for (int j = 0; j < luv_image.cols; j++) {
+                int label = labels.at<int>(i, j);
+                segmented_image.at<Vec3b>(i, j) = centers.at<Vec3f>(label, 0);
+            }
+        }
+
+        // Convert the segmented image back to BGR color space
+        Mat bgr_image;
+        cvtColor(segmented_image, bgr_image, COLOR_Luv2BGR);
+
+        // Display the original and segmented images
+        showImg(bgr_image, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
+    }
+    else if(mode == "Mean Shift"){
+        Mat image = img.clone();
+        cv::resize(image, image, cv::Size(), 0.25, 0.25); // resize the image to reduce computation time
+
+        double bandwidth = 45;// bandwidth parameter
+        qDebug()<<bandwidth;
+        Mat output = mean_shift_segmentation(image, bandwidth);
+        showImg(output, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
+    }
 }
 
 
