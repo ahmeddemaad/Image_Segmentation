@@ -37,4 +37,10 @@ struct Pixel {
 };
 Mat mean_shift_segmentation(cv::Mat image, double bandwidth);
 double estimateBandwidth(cv::Mat inputImg);
+
+long calcDistance(Vec3b point1, Vec3b point2);
+Vec3b mergeClusters(Vec3b c1, Vec3b c2);
+Mat agglomerativeClustering(Mat& original, int n);
+
+
 #endif // SEGMENTATION_H

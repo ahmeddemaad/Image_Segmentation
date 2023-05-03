@@ -170,6 +170,17 @@ void MainWindow::on_submitBtn_clicked()
         Mat output = mean_shift_segmentation(image, bandwidth);
         showImg(output, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
     }
+
+
+    else if(mode=="Agglomerative"){
+        Mat original = img.clone();
+        cv::resize(original,original,cv::Size(60,60));
+
+        Mat result = agglomerativeClustering(original , 3);
+
+        showImg(result, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
+
+    }
 }
 
 
@@ -183,10 +194,6 @@ void MainWindow::on_comboBox_currentTextChanged(const QString &mode)
         ui->set_seedsBtn->hide();
         ui->horizontalSlider->show();
         ui->label_8->show();
-        ui->imginput1->clear();
-        ui->imgOutput1->clear();
-        showImg(img, ui->imginput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
-
     }
 
     else if(mode=="Region Growing"){
@@ -194,20 +201,18 @@ void MainWindow::on_comboBox_currentTextChanged(const QString &mode)
         ui->set_seedsBtn->show();
         ui->horizontalSlider->hide();
         ui->label_8->hide();
-        ui->imginput1->clear();
-        ui->imgOutput1->clear();
-        showImg(img, ui->imginput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
     }
-    else if(mode=="Mean Shift")
+    else if(mode=="Mean Shift" || mode=="Agglomerative")
     {
         ui->label_2->hide();
         ui->set_seedsBtn->hide();
         ui->horizontalSlider->hide();
         ui->label_8->hide();
-        ui->imginput1->clear();
-        ui->imgOutput1->clear();
-        showImg(img, ui->imginput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
     }
+
+    ui->imginput1->clear();
+    ui->imgOutput1->clear();
+    showImg(img, ui->imginput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
 
 }
 

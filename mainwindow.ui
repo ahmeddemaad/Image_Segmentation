@@ -733,17 +733,22 @@ QComboBox::down-arrow {
       </property>
       <item>
        <property name="text">
-        <string>Region Growing</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>kmeans</string>
        </property>
       </item>
       <item>
        <property name="text">
+        <string>Region Growing</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>Mean Shift</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Agglomerative</string>
        </property>
       </item>
      </widget>
@@ -1558,7 +1563,7 @@ QPushButton:pressed {
      <x>0</x>
      <y>0</y>
      <width>1221</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
