@@ -17,7 +17,7 @@
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>200</x>
       <y>10</y>
       <width>1011</width>
       <height>611</height>
@@ -27,7 +27,7 @@
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page">
      <property name="styleSheet">
@@ -167,8 +167,8 @@ QPushButton:hover{
      <widget class="QPushButton" name="siftBtn">
       <property name="geometry">
        <rect>
-        <x>410</x>
-        <y>460</y>
+        <x>560</x>
+        <y>450</y>
         <width>93</width>
         <height>41</height>
        </rect>
@@ -199,7 +199,7 @@ QPushButton:hover{
 }</string>
       </property>
       <property name="text">
-       <string>Sift</string>
+       <string>submit</string>
       </property>
      </widget>
      <widget class="QWidget" name="horizontalLayoutWidget_4">
@@ -252,27 +252,111 @@ QPushButton:hover{
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="verticalLayoutWidget_7">
+     <widget class="QComboBox" name="comboBox">
       <property name="geometry">
        <rect>
-        <x>560</x>
-        <y>410</y>
-        <width>126</width>
-        <height>91</height>
+        <x>30</x>
+        <y>460</y>
+        <width>75</width>
+        <height>25</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_11">
-       <item>
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>Computation Time</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLCDNumber" name="siftTime"/>
-       </item>
-      </layout>
+      <item>
+       <property name="text">
+        <string>otsu</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>optimal</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>multilevel</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QSlider" name="horizontalSlider">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>460</y>
+        <width>211</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>3</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="slider_thres_val">
+      <property name="geometry">
+       <rect>
+        <x>540</x>
+        <y>460</y>
+        <width>21</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="global">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>420</y>
+        <width>107</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>global</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="local">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>480</y>
+        <width>107</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>local</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>460</y>
+        <width>63</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>box size</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_multi">
+      <property name="geometry">
+       <rect>
+        <x>232</x>
+        <y>460</y>
+        <width>91</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="page_3">
@@ -759,7 +843,7 @@ QPushButton:pressed {
 }</string>
     </property>
     <property name="text">
-     <string>SIFT</string>
+     <string>Threshold</string>
     </property>
     <property name="autoDefault">
      <bool>false</bool>
@@ -797,7 +881,7 @@ QPushButton:pressed {
      <x>0</x>
      <y>0</y>
      <width>1221</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

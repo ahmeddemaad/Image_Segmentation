@@ -9,7 +9,7 @@
 #include <opencv2/highgui.hpp>
 #include "segmentation.h"
 #include <iostream>
-
+#include<threshold.h>
 using namespace std;
 using namespace cv;
 
@@ -19,8 +19,12 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
+
     ui->setupUi(this);
+
 }
+
 
 MainWindow::~MainWindow()
 {
@@ -28,8 +32,11 @@ MainWindow::~MainWindow()
 }
 
 
+
 QString imgPath;
 Mat img;
+
+
 void MainWindow::on_actionUpload_triggered()
 {
     ui->imginput1->clear();
@@ -73,5 +80,125 @@ void MainWindow::on_submitBtn_clicked()
     cvtColor(img.clone(), im, COLOR_BGR2GRAY);
     Mat segmented_image = regionGrowing(im, *seedSet, 255, 2);
     showImg(segmented_image, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
+}
+
+
+void MainWindow::on_siftBtn_clicked()
+{
+    Mat im;
+    Mat output;
+    cvtColor(img.clone(), im, COLOR_BGR2GRAY);
+  if(ui->comboBox->currentIndex()==0){
+   if(ui->local->isChecked()){
+    output=thresholding_local(im,ui->horizontalSlider->value(),"otsu");
+
+   }
+   else if(ui->global->isChecked()){
+       output=otsu_thresholding(im);
+
+   }
+   else{
+
+
+
+   }
+}
+  else if(ui->comboBox->currentIndex()==1){
+
+
+      if(ui->local->isChecked()){
+       output=thresholding_local(im,ui->horizontalSlider->value(),"optimal");
+
+      }
+      else if(ui->global->isChecked()){
+
+          output=optimal_thresholding(im);
+
+      }
+      else{
+
+
+
+      }
+   }
+    else{
+      output=multilevelThresholding(im,ui->horizontalSlider->value());
+
+
+  }
+
+
+    showImg(output, ui->imgSift, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
+
+
+
+}
+
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    ui->slider_thres_val->setText(QString::number(value));
+}
+
+
+
+// Swapping between the 3 pages
+void MainWindow::on_pushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+}
+
+void MainWindow::on_global_toggled(bool checked)
+{
+        ui->horizontalSlider->hide();
+        ui->slider_thres_val->hide();
+        ui->label_2->hide();
+
+
+}
+
+
+void MainWindow::on_local_toggled(bool checked)
+{
+
+    ui->horizontalSlider->show();
+    ui->slider_thres_val->show();
+    ui->label_2->show();
+
+
+}
+
+
+void MainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    if(ui->comboBox->currentIndex()==2){
+
+        ui->horizontalSlider->show();
+        ui->label_multi->setText("num of levels");
+        ui->label_2->hide();
+        ui->global->hide();
+        ui->local->hide();
+
+
+    }
+    else{
+          ui->label_multi->hide();
+          ui->local->show();
+          ui->global->show();
+          ui->label_2->show();
+
+
+
+    }
 }
 

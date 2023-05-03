@@ -30,6 +30,24 @@ private slots:
 
     void on_submitBtn_clicked();
 
+    void on_siftBtn_clicked();
+
+    void on_horizontalSlider_valueChanged(int value);
+
+    void on_pushButton_clicked();
+
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_global_toggled(bool checked);
+
+    void on_local_toggled(bool checked);
+
+    void on_comboBox_activated(int index);
+
+    void on_comboBox_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
 };
