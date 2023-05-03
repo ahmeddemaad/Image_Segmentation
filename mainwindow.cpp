@@ -31,7 +31,6 @@ MainWindow::~MainWindow()
 }
 
 
-vector<pair<int, int>>* seedSet;
 
 QString imgPath;
 Mat img;
@@ -41,17 +40,12 @@ void MainWindow::on_actionUpload_triggered()
 {
 
     // Clearing Previous images
-    ui->imginput1->clear();
-    ui->imgOutput1->clear();
-
 
 
     // Reading the images & Resizing it to fit Qlabel
     QString imgPath = QFileDialog::getOpenFileName(this, "Open an Image", "..", "Images (*.png *.xpm *.jpg *.bmb)");
     if(imgPath.isEmpty())
         return;
-    img = imread(imgPath.toStdString());
-
     ui->imginput1->clear();
     ui->imgOutput1->clear();
     img = imread(imgPath.toStdString(),IMREAD_COLOR);
@@ -66,18 +60,16 @@ void MainWindow::on_actionUpload_triggered()
 
 void MainWindow::on_set_seedsBtn_clicked()
 {
-
     ui->imgOutput1->clear();
     if(!get_seeds()->empty())
     {
-//        ui->seedSet->clear();
+        seedSet->clear();
     }
     seedSet = get_seeds();
     setImg(img.clone());
     Mat img_with_seeds;
     cvtColor(img, img_with_seeds, COLOR_BGR2RGB);
     getImgLbl(ui->imginput1);
-
     // Create a window
     namedWindow("set seeds", WINDOW_AUTOSIZE);
     // Show our image inside the created window
@@ -91,10 +83,6 @@ void MainWindow::on_set_seedsBtn_clicked()
 //@desc Actions on clicking on ReigonGrowing Submit button
 void MainWindow::on_submitBtn_clicked()
 {
-    Mat im;
-    cvtColor(img.clone(), im, COLOR_BGR2GRAY);
-    Mat segmented_image = regionGrowing(im, *seedSet, 255, 2);
-    showImg(segmented_image, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
 
 //    if(imgPath.isEmpty())
 //        return;
@@ -158,7 +146,6 @@ void MainWindow::on_submitBtn_clicked()
         showImg(output, ui->imgOutput1, QImage::Format_RGB888, ui->imginput1->width(), ui->imginput1->height());
     }
 }
-
 
 
 void MainWindow::on_siftBtn_clicked()
@@ -277,4 +264,6 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 
 
 
-    }}
+    }
+}
+
