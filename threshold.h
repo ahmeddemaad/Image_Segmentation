@@ -1,3 +1,6 @@
+#ifndef THRESHOLD_H
+#define THRESHOLD_H
+
 
 #include <QImage>
 #include <QDebug>
@@ -12,3 +15,5 @@ Mat thresholding_local(Mat image, int blockSize,std::string type);
 Mat otsu_thresholding(Mat image);
 Mat multilevelThresholding(Mat inputImage, int numThresholds);
 std::vector<double> calculateInitialThresholds(Mat grayImage, int numThresholds);
+
+#endif // THRESHOLD_H
