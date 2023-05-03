@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->local->setDisabled(true);
     ui->global->setDisabled(true);
     ui->label_8->hide();
+    ui->label_2->hide();
 
 
 }
@@ -189,7 +190,7 @@ void MainWindow::on_submitBtn_clicked()
 void MainWindow::on_comboBox_currentTextChanged(const QString &mode)
 {
 
-    if(mode=="kmeans"){
+    if(mode=="kmeans" || mode=="Agglomerative"){
         ui->label_2->show();
         ui->set_seedsBtn->hide();
         ui->horizontalSlider->show();
@@ -202,7 +203,7 @@ void MainWindow::on_comboBox_currentTextChanged(const QString &mode)
         ui->horizontalSlider->hide();
         ui->label_8->hide();
     }
-    else if(mode=="Mean Shift" || mode=="Agglomerative")
+    else if(mode=="Mean Shift")
     {
         ui->label_2->hide();
         ui->set_seedsBtn->hide();
